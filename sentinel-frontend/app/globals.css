@@ -47,6 +47,16 @@
     --sidebar-ring: oklch(0.556 0 0);
 
     --radius: 0.625rem;
+
+    /* Status Colors */
+    --status-healthy: 34 197 94;
+    /* green-500 */
+    --status-warning: 234 179 8;
+    /* yellow-500 */
+    --status-critical: 239 68 68;
+    /* red-500 */
+    --status-unknown: 107 114 128;
+    /* gray-500 */
 }
 
 @layer base {

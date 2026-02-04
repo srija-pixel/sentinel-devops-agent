@@ -5,7 +5,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 // Mock types for our simulation
 type WebSocketMessage = {
   type: "metrics_update" | "incident_alert" | "log_entry";
-  payload: any;
+  payload: unknown;
 };
 
 interface UseWebSocketOptions {
@@ -54,11 +54,15 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}) {
 
   useEffect(() => {
     if (!enabled) {
-      setStatus("disconnected");
+      if (status !== "disconnected") {
+        setTimeout(() => setStatus("disconnected"), 0);
+      }
       return;
     }
 
-    setStatus("connecting");
+    if (status !== "connecting" && status !== "connected") {
+      setTimeout(() => setStatus("connecting"), 0);
+    }
 
     // Simulate connection delay
     const connectTimer = setTimeout(() => {
