@@ -83,7 +83,14 @@ describe('sentinel status', () => {
         const output = stripAnsi(consoleCapture.getOutput());
 
         expect(output).toContain('Sentinel System Status');
-        // Table should be rendered but with no service rows
+        // Verify no service rows are rendered - these service names should NOT appear
+        expect(output).not.toContain('AUTH');
+        expect(output).not.toContain('PAYMENT');
+        expect(output).not.toContain('NOTIFICATION');
+        // Verify no status codes appear in the output (except in headers)
+        expect(output).not.toContain('HEALTHY');
+        expect(output).not.toContain('CRITICAL');
+        expect(output).not.toContain('DEGRADED');
     });
 
     it('should display last updated timestamp when available', async () => {

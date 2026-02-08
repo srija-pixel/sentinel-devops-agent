@@ -136,4 +136,36 @@ describe('sentinel report', () => {
         // The mock data has a recovery (HEALTHY after CRITICAL/DEGRADED)
         expect(writtenContent).toContain('Recovery');
     });
+
+    it('should handle API failure gracefully', async () => {
+        mockGetInsights.mockRejectedValue(new Error('API connection failed'));
+        consoleCapture.start();
+
+        // The function should handle the error without crashing
+        await expect(generateReport()).rejects.toThrow('API connection failed');
+
+        consoleCapture.stop();
+        const output = stripAnsi(consoleCapture.getOutput());
+
+        // Should at least show the initial message before failure
+        expect(output).toContain('Generating Incident Report');
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    it('should handle file write failure gracefully', async () => {
+        mockGetInsights.mockResolvedValue(mockInsights.withIncidents);
+        mockWriteFileSync.mockImplementation(() => {
+            throw new Error('Permission denied: cannot write file');
+        });
+        consoleCapture.start();
+
+        // The function should propagate the error (no try/catch in source)
+        await expect(generateReport()).rejects.toThrow('Permission denied');
+
+        consoleCapture.stop();
+        const output = stripAnsi(consoleCapture.getOutput());
+
+        // Should show the generating message before the write failure
+        expect(output).toContain('Generating Incident Report');
+    });
 });
