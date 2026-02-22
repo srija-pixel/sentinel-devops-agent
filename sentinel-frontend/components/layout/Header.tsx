@@ -59,6 +59,7 @@ export function Header() {
     { href: "#features", label: "Features" },
     { href: "#how-it-works", label: "How It Works" },
     { href: "/demo", label: "Live Demo" },
+    { href: "/contributors", label: "Contributors" },
   ];
 
   return (
